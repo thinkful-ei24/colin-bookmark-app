@@ -9,7 +9,7 @@ const api = (function () {
 			callback(data)
 		}
 
-	})
+	}) 
 	}
 
 	const createItem = (item, callback) => {
@@ -20,14 +20,37 @@ const api = (function () {
 			success: function(data) {
 				callback(data)
 			}
+		}) 
+	} //makes an item in remote server, and calls a function on that item
 
-
-		})
+	const updateItem = (item, id, callback) => {
+		$.ajax({
+			type: "PATCH",
+			url: `${BASE_URL}/id`,
+			data: item,
+			success: function(data) {
+				callback(data);
+			}
+		});
 	}
 
+	const deleteItem = (id, callback) => {
+		$.ajax({
+			type: "DELETE",
+			url: `${BASE_URL}/id`,
+			success: function (data) {
+				callback(data)
+			}
+
+
+		});
+	}
 	
 	return {
 		getItems,
+		createItem,
+		updateItem,
+		deleteItem,	
 	}
 
 

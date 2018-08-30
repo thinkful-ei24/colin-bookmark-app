@@ -16,15 +16,25 @@ const store = (function () {
 		this.items = items;
 	}
 
+	const updateItem = function (id, item) {
+		const target = findById(id)
+		return target = item;
+	}
+
+	const deleteItem = function (id) {
+		this.item = this.item.filter(item => item.id !==id);
+	}
+
 	return {
 		items,
 		addItem,
 		findById,
+		setItems,
+		updateItem,
+		deleteItem
 	}
 
 }());
 	
-	
 
-	addItem ()
 	
