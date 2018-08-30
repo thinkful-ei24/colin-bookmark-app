@@ -12,6 +12,9 @@ const store = (function () {
 		return this.items.find(item => item.id === id)
 	};  //when a unique id is passed into this fn it will return the store object with that ID
 
+	const setItems = function(items) {
+		this.items = items;
+	}
 
 	return {
 		items,
@@ -22,4 +25,6 @@ const store = (function () {
 }());
 	
 	
+
+	addItem ()
 	
