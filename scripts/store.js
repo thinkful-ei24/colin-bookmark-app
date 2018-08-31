@@ -3,6 +3,7 @@
 const store = (function () {
 
 	const items = [];
+	const showForm = false;
 
 	const addItem = function(item) {
 		this.items.push(item);
@@ -27,8 +28,14 @@ const store = (function () {
 		console.log(store.items);
 	}
 
+	const showHideForm = function() {
+		this.showForm = !this.showForm;
+	}
+
 	return {
 		items,
+		showForm,
+		showHideForm,
 		addItem,
 		findById,
 		setItems,

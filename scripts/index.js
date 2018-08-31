@@ -7,18 +7,21 @@ $(document).ready(function () {
 	})
 	handleAddBookmark();
 	handleDeleteBookmark();
+	handleShowFormButton();
 	
 });
 
 const generateFormElement = function () {
 	return `
-	<form> 
+    <form id="js-add-new"> 
       <label for='js-add-form-title'>Title</label>
-      <input type="text" name="title" id="js-add-form-title" placeholder="Wikipedia">
+      <input type="text" name="title" id="title" placeholder="Wikipedia">
+      
       <label for="js-add-form-url">URL</label>
-      <input type="text" name="url" id="js-add-form-url" placeholder="https://www.wikipedia.org/">
+      <input type="text" name="url" id="url" placeholder="https://www.wikipedia.org/">
+      
       <label for="js-add-form-rating">Rating</label>
-      <select>
+      <select name="rating" id="rating">
         <option></option>
         <option value="1">1 star</option>
         <option value="2">2 stars</option>
@@ -26,10 +29,12 @@ const generateFormElement = function () {
         <option value="4">4 stars</option>
         <option value="5">5 stars</option>
       </select>                                      <br>
+      
       <label for="js-add-form-desc"></label>
-      <input type="text" name="desc" id="js-add-form-desc" placeholder="Describe this website ...">
+      <input type="text" name="desc" id="desc" placeholder="Describe this website ...">
       <button type="submit">Submit</button>
-    </form>`
+    </form>
+  </div>`
 };
 
 function generateItemElement (item) {
@@ -55,12 +60,11 @@ function generateBookmarkDisplay (items) {
 }
 
 function render () {
-	const bookmarkItemsString = generateBookmarkDisplay(store.items);
+
+
+const bookmarkItemsString = generateBookmarkDisplay(store.items);
 	$('.js-bookmark-display').html(bookmarkItemsString);
 }
-
-
-
 
 const handleAddBookmark = () => {
 	$('#js-add-new').submit( event => {	
@@ -89,4 +93,24 @@ const handleDeleteBookmark = () => {
 			render();
 		});
 	});
+}
+
+const handleAddBookmarksForm = () => {
+	$('')
+}
+
+const handleShowFormButton = () => {
+	if (store.showForm === false) {
+		$('#show-add-form').on('click', (event) => {
+			console.log(store.showForm);
+			if (store.showForm === false) {
+				$('.bookmark-creation').html(generateFormElement());
+			}
+			else {
+				$('.bookmark-creation').html('');
+			} 
+			store.showHideForm();
+			render();
+		});
+	}
 }
