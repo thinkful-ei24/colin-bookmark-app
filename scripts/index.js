@@ -21,11 +21,11 @@ $(document).ready(function () {
 
 const generateFormElement = function () {
 	
-	let errorText = store.getError() ? `<p>${store.getError()}</p>` : '';
+	let errorText = store.getError() ? `<p aria-label="${store.getError()}">${store.getError()}</p>` : '';
 
-console.log(errorText);
+	console.log(errorText);
 	return `
-    <form id="js-add-new"> 
+    <form aria-label="Add a new bookmark" id="js-add-new"> 
       <label for='js-add-form-title'>Title</label>
       <input type="text" name="title" id="title" placeholder="Wikipedia">
       
