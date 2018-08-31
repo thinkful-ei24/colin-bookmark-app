@@ -4,13 +4,13 @@ $(document).ready(function () {
 	api.getItems(function (items) {
 		store.setItems(items); 
 		render()
-		//@TODO make a render method
 	})
-	
+	handleAddBookmark();
+	handleDeleteBookmark();
 	
 });
 
-function generateFormElement() {
+const generateFormElement = function () {
 	return `
 	<form> 
       <label for='js-add-form-title'>Title</label>
@@ -30,32 +30,49 @@ function generateFormElement() {
       <input type="text" name="desc" id="js-add-form-desc" placeholder="Describe this website ...">
       <button type="submit">Submit</button>
     </form>`
-}
+};
 
 function generateItemElement (item) {
 	return `
-	<div class="bookmark" id='${store.items.id}'>
-      <h2>${store.items.title}</h2>
-      <p class="rating">rating: ${store.item.rating}</p>
+	<li class="bookmark" id='${item.id}'>
+      <h2>${item.title}</h2>
+      <p class="rating">rating: ${item.rating}</p>
       
       <!-- dynamic -->
-      <div class=${store.items.state}>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id malesuada sem. Aenean mi odio, maximus quis libero in, euismod faucibus est. Donec facilisis laoreet cursus. Vestibulum aliquam risus nisl, at accumsan nibh laoreet sit amet. Aliquam commodo nec massa vel imperdiet. Donec placerat luctus urna ut viverra. Nunc faucibus ligula non posuere sollicitudin. Phasellus mollis elit ut ex rutrum, in fermentum sem volutpat. Fusce iaculis venenatis aliquam. Sed ul</p>
+      <div class=${item.state}>
+        <p>${item.desc}</p>
         <button type="button" class="js-visit-url">Visit</button>
         <button type="button" class="js-delete-bookmark">Delete</button>
         <button type="button" class="js-edit">Edit</button>
       </div>
-    </div>`
+    </li>`
+}
+
+function generateBookmarkDisplay (items) {
+	const bookmarkHtml = items.map(item => generateItemElement(item));
+	return bookmarkHtml.join('');
+
+}
+
+function render () {
+	const bookmarkItemsString = generateBookmarkDisplay(store.items);
+	$('.js-bookmark-display').html(bookmarkItemsString);
 }
 
 
 
 
 const handleAddBookmark = () => {
-	$('form').submit(event => {
+	$('#js-add-new').submit( event => {	
 		event.preventDefault();
-		//@TODO: actually get the data from the inputs
-		api.createItem(/*JSONobject*/json, (item) => {
+		let formData = {
+			title: $('#title').val(),
+			url: $('#url').val(),
+			desc: $('#desc').val(), //@TODO make option
+			rating: $('#rating').find(":selected").val() //@TODO makeoptional
+		};
+		formData = JSON.stringify(formData);
+		api.createItem(formData, (item) => {
 			store.addItem(item);	
 			render();
 		});
@@ -63,10 +80,13 @@ const handleAddBookmark = () => {
 }
 
 const handleDeleteBookmark = () => {
-	$('.bookmark').on('click', (event) => {
-		const targetID = $(event.currentTarget).closest('.js-item-id');
-		api.deleteItem(targetId, store.deleteItem(targetID)) {
+	$('ul').on('click', '.js-delete-bookmark', (event) => {
+		console.log('foo');
+		const targetID = $(event.currentTarget).closest('.bookmark').attr('id');
+
+		api.deleteItem(targetID, () => {
+			store.deleteItem(targetID); 
 			render();
-		}
+		});
 	});
 }

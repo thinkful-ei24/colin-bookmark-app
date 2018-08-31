@@ -8,15 +8,16 @@ const api = (function () {
 		success: function(data) {
 			callback(data)
 		}
-
 	}) 
 	}
 
 	const createItem = (item, callback) => {
+		console.log(item);
 		$.ajax({
 			type: "POST",
 			url: BASE_URL,
 			data: item,
+			contentType: 'application/json',
 			success: function(data) {
 				callback(data)
 			}
@@ -27,7 +28,7 @@ const api = (function () {
 		$.ajax({
 			type: "PATCH",
 			url: `${BASE_URL}/id`,
-			data: item,
+			data: JSON.stringify(item),
 			success: function(data) {
 				callback(data);
 			}
@@ -37,12 +38,10 @@ const api = (function () {
 	const deleteItem = (id, callback) => {
 		$.ajax({
 			type: "DELETE",
-			url: `${BASE_URL}/id`,
-			success: function (data) {
-				callback(data)
+			url: BASE_URL + '/' + id,
+			success: function () { //may need to pass id in as a parameter
+				callback()
 			}
-
-
 		});
 	}
 	
