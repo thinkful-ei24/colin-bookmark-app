@@ -60,9 +60,13 @@ function generateBookmarkDisplay (items) {
 }
 
 function render () {
-
-
-const bookmarkItemsString = generateBookmarkDisplay(store.items);
+	if (store.showForm === false) {
+		$('.bookmark-creation').html(generateFormElement());
+	}
+	else {
+		$('.bookmark-creation').html('');
+	} 
+	const bookmarkItemsString = generateBookmarkDisplay(store.items);
 	$('.js-bookmark-display').html(bookmarkItemsString);
 }
 
@@ -85,7 +89,6 @@ const handleAddBookmark = () => {
 
 const handleDeleteBookmark = () => {
 	$('ul').on('click', '.js-delete-bookmark', (event) => {
-		console.log('foo');
 		const targetID = $(event.currentTarget).closest('.bookmark').attr('id');
 
 		api.deleteItem(targetID, () => {
@@ -100,17 +103,9 @@ const handleAddBookmarksForm = () => {
 }
 
 const handleShowFormButton = () => {
-	if (store.showForm === false) {
-		$('#show-add-form').on('click', (event) => {
-			console.log(store.showForm);
-			if (store.showForm === false) {
-				$('.bookmark-creation').html(generateFormElement());
-			}
-			else {
-				$('.bookmark-creation').html('');
-			} 
-			store.showHideForm();
-			render();
-		});
-	}
+	$('#show-add-form').on('click', (event) => {
+		store.showHideForm();
+		render();
+	});	
 }
+
