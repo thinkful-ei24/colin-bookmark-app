@@ -32,6 +32,8 @@ const generateFormElement = function () {
       <label for="js-add-form-url">URL</label>
       <input type="text" name="url" id="url" placeholder="https://www.wikipedia.org/">
       
+
+
       <label for="js-add-form-rating">Rating</label>
       <select name="rating" id="rating">
         <option></option>
@@ -40,9 +42,9 @@ const generateFormElement = function () {
         <option value="3">3 stars</option>
         <option value="4">4 stars</option>
         <option value="5">5 stars</option>
-      </select>                                      <br>
+      </select>                               
       
-      <label for="js-add-form-desc"></label>
+      <label for="js-add-form-desc">Description</label>
       <input type="text" name="desc" id="desc" placeholder="Describe this website ...">
       <button type="submit">Submit</button>
       ${errorText}
@@ -69,7 +71,7 @@ function generateItemElement (item) {
      	${descDiv}
         <button type="button" class="js-visit-url"><a href="${item.url}" target="_blank">Visit</a></button>
         <button type="button" class="js-delete-bookmark">Delete</button>
-        <button type="button" class="js-edit">Edit</button>
+        <button type="button" class="js-edit">Coming soon!</button>
       </div>
     </li>`
 	};
