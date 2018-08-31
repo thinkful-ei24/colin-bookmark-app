@@ -5,9 +5,16 @@ $(document).ready(function () {
 		store.setItems(items); 
 		render()
 	})
-	handleAddBookmark();
 	handleDeleteBookmark();
 	handleShowFormButton();
+	handleBookmarkExpansion();
+
+	// TODO - This isn't being initiallized if the 
+	//        page is loaded and this isn't in the DOM
+	//        e.g. If you have store.showForm = false
+	//             on page load, then this will fail.
+	handleAddBookmark();
+
 	
 });
 
@@ -33,20 +40,26 @@ const generateFormElement = function () {
       <label for="js-add-form-desc"></label>
       <input type="text" name="desc" id="desc" placeholder="Describe this website ...">
       <button type="submit">Submit</button>
-    </form>
-  </div>`
+    </form>`
 };
 
 function generateItemElement (item) {
+	
+	let ratingDiv = '';
+	let descDiv = ' ';
+
+	if (item.rating) ratingDiv = `<p class="rating">rating: ${item.rating}</p>`;
+	if (item.desc) descDiv = `<p>${item.desc}</p>`;
 	return `
 	<li class="bookmark" id='${item.id}'>
-      <h2>${item.title}</h2>
-      <p class="rating">rating: ${item.rating}</p>
+      <div class="bookmark-heading">
+      	<h2 class="bookmark-title">${item.title}</h2>
+      	${ratingDiv}
+      </div>
       
-      <!-- dynamic -->
-      <div class=${item.state}>
-        <p>${item.desc}</p>
-        <button type="button" class="js-visit-url">Visit</button>
+      <div class="${item.state}">
+     	${descDiv}
+        <button type="button" class="js-visit-url"><a href="${item.url}" target="_blank">Visit</a></button>
         <button type="button" class="js-delete-bookmark">Delete</button>
         <button type="button" class="js-edit">Edit</button>
       </div>
@@ -60,25 +73,30 @@ function generateBookmarkDisplay (items) {
 }
 
 function render () {
-	if (store.showForm === false) {
-		$('.bookmark-creation').html(generateFormElement());
+	if (store.showForm === true) {
+		$('.bookmark-creation').html('');
 	}
 	else {
-		$('.bookmark-creation').html('');
+		$('.bookmark-creation').html(generateFormElement());
+		handleAddBookmark();
 	} 
+
+
 	const bookmarkItemsString = generateBookmarkDisplay(store.items);
 	$('.js-bookmark-display').html(bookmarkItemsString);
 }
 
 const handleAddBookmark = () => {
-	$('#js-add-new').submit( event => {	
+	$('#js-add-new').submit( (event) => {	
 		event.preventDefault();
 		let formData = {
 			title: $('#title').val(),
 			url: $('#url').val(),
-			desc: $('#desc').val(), //@TODO make option
-			rating: $('#rating').find(":selected").val() //@TODO makeoptional
 		};
+
+		if ($('#desc').val()) formData.desc = $('#desc').val(); 
+		if ($('#rating').find(":selected").val()) formData.rating = $('#rating').find(":selected").val();
+	
 		formData = JSON.stringify(formData);
 		api.createItem(formData, (item) => {
 			store.addItem(item);	
@@ -98,9 +116,6 @@ const handleDeleteBookmark = () => {
 	});
 }
 
-const handleAddBookmarksForm = () => {
-	$('')
-}
 
 const handleShowFormButton = () => {
 	$('#show-add-form').on('click', (event) => {
@@ -108,4 +123,20 @@ const handleShowFormButton = () => {
 		render();
 	});	
 }
+
+const handleBookmarkExpansion = () => {
+	$('.js-bookmark-display').on('click', '.bookmark-heading', (event) => {
+		const targetItem = store.findById($(event.currentTarget).parent().attr('id')); 
+		          
+		console.log(targetItem);
+		store.changeCollapsedState(targetItem); 
+		render();
+	});
+}
+
+// const handleVisitUrl = () => {
+// 	$('.js-bookmark-display').on('click', 'js-visit-url', event => {
+
+// 	});
+// }
 

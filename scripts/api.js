@@ -39,7 +39,7 @@ const api = (function () {
 		$.ajax({
 			type: "DELETE",
 			url: BASE_URL + '/' + id,
-			success: function () { //may need to pass id in as a parameter
+			success: function () {
 				callback()
 			}
 		});
