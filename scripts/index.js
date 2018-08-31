@@ -14,11 +14,16 @@ $(document).ready(function () {
 	//        e.g. If you have store.showForm = false
 	//             on page load, then this will fail.
 	handleAddBookmark();
+	filterByRating();
 
 	
 });
 
 const generateFormElement = function () {
+	
+	let errorText = store.getError() ? `<p>${store.getError()}</p>` : '';
+
+console.log(errorText);
 	return `
     <form id="js-add-new"> 
       <label for='js-add-form-title'>Title</label>
@@ -40,16 +45,19 @@ const generateFormElement = function () {
       <label for="js-add-form-desc"></label>
       <input type="text" name="desc" id="desc" placeholder="Describe this website ...">
       <button type="submit">Submit</button>
+      ${errorText}
     </form>`
 };
 
 function generateItemElement (item) {
 	
+	
 	let ratingDiv = '';
 	let descDiv = ' ';
-
 	if (item.rating) ratingDiv = `<p class="rating">rating: ${item.rating}</p>`;
 	if (item.desc) descDiv = `<p>${item.desc}</p>`;
+
+	if (item.rating >= getFilterRating()) {
 	return `
 	<li class="bookmark" id='${item.id}'>
       <div class="bookmark-heading">
@@ -64,6 +72,7 @@ function generateItemElement (item) {
         <button type="button" class="js-edit">Edit</button>
       </div>
     </li>`
+	};
 }
 
 function generateBookmarkDisplay (items) {
@@ -79,12 +88,26 @@ function render () {
 	else {
 		$('.bookmark-creation').html(generateFormElement());
 		handleAddBookmark();
-	} 
+	}
 
 
 	const bookmarkItemsString = generateBookmarkDisplay(store.items);
 	$('.js-bookmark-display').html(bookmarkItemsString);
 }
+
+
+const onSuccess = function (item) {
+	store.addItem(item);
+	store.setError(null);
+	render();
+};
+
+const onError = function (error) {
+	error = JSON.parse(error.responseText);
+	store.setError(error.message);
+	render();
+};
+
 
 const handleAddBookmark = () => {
 	$('#js-add-new').submit( (event) => {	
@@ -98,10 +121,7 @@ const handleAddBookmark = () => {
 		if ($('#rating').find(":selected").val()) formData.rating = $('#rating').find(":selected").val();
 	
 		formData = JSON.stringify(formData);
-		api.createItem(formData, (item) => {
-			store.addItem(item);	
-			render();
-		});
+		api.createItem(formData, onSuccess, onError);
 	});
 }
 
@@ -127,16 +147,18 @@ const handleShowFormButton = () => {
 const handleBookmarkExpansion = () => {
 	$('.js-bookmark-display').on('click', '.bookmark-heading', (event) => {
 		const targetItem = store.findById($(event.currentTarget).parent().attr('id')); 
-		          
-		console.log(targetItem);
 		store.changeCollapsedState(targetItem); 
 		render();
 	});
 }
 
-// const handleVisitUrl = () => {
-// 	$('.js-bookmark-display').on('click', 'js-visit-url', event => {
+const getFilterRating = function () {
+	const filterValue = $('#rating-filter').val();
+	return filterValue;
+}
 
-// 	});
-// }
-
+const filterByRating = function () {
+	$('#rating-filter').change(event => {
+		render()
+	});
+}

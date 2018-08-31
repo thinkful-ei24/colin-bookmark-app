@@ -3,6 +3,7 @@
 const store = (function () {
 
 	const items = [];
+	const error = null;
 	const showForm = true;
 
 	const addItem = function(item) {
@@ -46,10 +47,21 @@ const store = (function () {
 		}
 	};
 
+	const getError = () => this.error;
+
+	const setError = (error) => {
+		this.error = error;
+	}
+
+
+
 
 
 	return {
 		items,
+		error,
+		setError,
+		getError,
 		changeCollapsedState,
 		showForm,
 		showHideForm,
